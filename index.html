@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>原神 - 游戏启动器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0c;
+            color: #e8dccc;
+            font-family: 'Microsoft YaHei', sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 2.5em;
+            color: #d5b87e;
+            text-shadow: 0 0 15px rgba(213, 184, 126, 0.5);
+            margin-bottom: 40px;
+        }
+
+        .launch-btn {
+            background: linear-gradient(45deg, #3a2e22, #584531);
+            border: 2px solid #d5b87e;
+            color: #d5b87e;
+            padding: 15px 50px;
+            font-size: 1.5em;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .launch-btn:hover {
+            background: linear-gradient(45deg, #584531, #3a2e22);
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(213, 184, 126, 0.3);
+        }
+
+        .queue-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(18, 16, 14, 0.95);
+            padding: 30px 50px;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            text-align: center;
+            display: none;
+        }
+
+        .queue-text {
+            font-size: 1.2em;
+            color: #d5b87e;
+            margin: 15px 0;
+        }
+
+        .cancel-btn {
+            background: #3a2e22;
+            border: 1px solid #d5b87e;
+            color: #d5b87e;
+            padding: 8px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.2s;
+        }
+
+        .cancel-btn:hover {
+            background: #d5b87e;
+            color: #3a2e22;
+        }
+
+        #video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: none;
+            z-index: 999;
+        }
+
+        #startup-video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .final-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #fff;
+            font-size: 2em;
+            z-index: 1000;
+        }
+
+        #dance-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            height: 300px;
+            z-index: 1001;
+            display: none;
+        }
+
+        #dance-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">原神启动器</h1>
+        <button class="launch-btn">开始游戏</button>
+    </div>
+
+    <div class="queue-panel">
+        <div class="queue-text">正在连接认证服务器...</div>
+        <div class="queue-text" id="queueNum"></div>
+        <div class="queue-text" id="queueTime"></div>
+        <button class="cancel-btn">取消启动</button>
+    </div>
+
+    <div id="video-container">
+        <video id="startup-video" muted>
+            <source src="launch.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <div id="dance-container">
+        <video id="dance-video" muted loop>
+            <source src="nailong.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <script>
+        let countdownTimer;
+
+        // 启动按钮点击事件
+        document.querySelector('.launch-btn').addEventListener('click', () => {
+            document.querySelector('.container').style.display = 'none';
+            const queueNum = Math.floor(Math.random() * 5) + 1;
+            
+            document.querySelector('.queue-panel').style.display = 'block';
+            document.getElementById('queueNum').textContent = `当前队列位置：第 ${queueNum} 位`;
+            
+            startCountdown(queueNum);
+        });
+
+        // 取消按钮点击事件
+        document.querySelector('.cancel-btn').addEventListener('click', () => {
+            if (confirm('游戏资源加载完成度 87%，确定要取消启动吗？')) {
+                clearInterval(countdownTimer);
+                showErrorMessage();
+            }
+        });
+
+        // 倒计时函数
+        function startCountdown(seconds) {
+            let countdown = seconds;
+            updateTimerDisplay(countdown);
+            
+            countdownTimer = setInterval(() => {
+                countdown--;
+                updateTimerDisplay(countdown);
+
+                if (countdown <= 0) {
+                    clearInterval(countdownTimer);
+                    startVideoPlayback();
+                }
+            }, 1000);
+        }
+
+        // 更新倒计时显示
+        function updateTimerDisplay(seconds) {
+            document.getElementById('queueTime').textContent = `预计等待时间：${seconds}秒`;
+            document.getElementById('queueTime').style.color = `hsl(${seconds * 50}, 70%, 50%)`;
+        }
+
+        // 视频播放控制
+        async function startVideoPlayback() {
+            try {
+                const videoContainer = document.getElementById('video-container');
+                const video = document.getElementById('startup-video');
+                
+                document.querySelector('.queue-panel').style.display = 'none';
+                videoContainer.style.display = 'block';
+                
+                // 确保视频可以播放
+                video.currentTime = 0;
+                await video.play();
+                
+                // 视频结束处理
+                video.onended = () => {
+                    showFinalMessage();
+                    playNaiLongDance();
+                }
+
+            } catch (error) {
+                console.error('视频播放失败:', error);
+                showErrorMessage();
+            }
+        }
+
+        // 显示最终提示
+        function showFinalMessage() {
+            const message = document.createElement('div');
+            message.className = 'final-message';
+            message.innerHTML = `
+                <div style="color:#ffdd55;margin-bottom:20px;">你被骗了 😜</div>
+                <div style="font-size:0.6em;">这个按钮根本没用！</div>
+            `;
+            document.body.appendChild(message);
+        }
+
+        // 播放奶龙跳舞视频
+        function playNaiLongDance() {
+            const danceContainer = document.getElementById('dance-container');
+            const danceVideo = document.getElementById('dance-video');
+            
+            danceContainer.style.display = 'block';
+            danceVideo.play();
+        }
+
+        // 错误处理
+        function showErrorMessage() {
+            document.querySelector('.queue-panel').innerHTML = `
+                <div class="queue-text" style="color:#ff6666;font-size:1.5em;">
+                    连接已中断 [错误代码: 420109]
+                    <div style="font-size:0.8em;margin-top:15px">请检查网络连接后重试</div>
+                </div>
+            `;
+            setTimeout(() => location.reload(), 3000);
+        }
+    </script>
+</body>
+</html>
