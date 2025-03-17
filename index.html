@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>原神 - 游戏启动器</title>
     <style>
         * {
@@ -25,24 +26,27 @@
             justify-content: center;
             height: 100vh;
             text-align: center;
+            padding: 20px;
         }
 
         .title {
-            font-size: 2.5em;
+            font-size: 2em;
             color: #d5b87e;
             text-shadow: 0 0 15px rgba(213, 184, 126, 0.5);
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         .launch-btn {
             background: linear-gradient(45deg, #3a2e22, #584531);
             border: 2px solid #d5b87e;
             color: #d5b87e;
-            padding: 15px 50px;
-            font-size: 1.5em;
-            border-radius: 30px;
+            padding: 12px 40px;
+            font-size: 1.2em;
+            border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s;
+            width: 100%;
+            max-width: 300px;
         }
 
         .launch-btn:hover {
@@ -57,28 +61,32 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(18, 16, 14, 0.95);
-            padding: 30px 50px;
+            padding: 20px;
             border-radius: 12px;
             box-shadow: 0 0 30px rgba(0,0,0,0.5);
             text-align: center;
             display: none;
+            width: 90%;
+            max-width: 400px;
         }
 
         .queue-text {
-            font-size: 1.2em;
+            font-size: 1em;
             color: #d5b87e;
-            margin: 15px 0;
+            margin: 10px 0;
         }
 
         .cancel-btn {
             background: #3a2e22;
             border: 1px solid #d5b87e;
             color: #d5b87e;
-            padding: 8px 25px;
+            padding: 8px 20px;
             border-radius: 20px;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 15px;
             transition: all 0.2s;
+            width: 100%;
+            max-width: 200px;
         }
 
         .cancel-btn:hover {
@@ -110,16 +118,18 @@
             transform: translate(-50%, -50%);
             text-align: center;
             color: #fff;
-            font-size: 2em;
+            font-size: 1.5em;
             z-index: 1000;
+            width: 90%;
+            max-width: 400px;
         }
 
         #dance-container {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 300px;
-            height: 300px;
+            bottom: 10px;
+            right: 10px;
+            width: 150px;
+            height: 150px;
             z-index: 1001;
             display: none;
         }
@@ -128,8 +138,37 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 手机端适配 */
+        @media (max-width: 480px) {
+            .title {
+                font-size: 1.5em;
+            }
+
+            .launch-btn {
+                padding: 10px 30px;
+                font-size: 1em;
+            }
+
+            .queue-panel {
+                padding: 15px;
+            }
+
+            .queue-text {
+                font-size: 0.9em;
+            }
+
+            .final-message {
+                font-size: 1.2em;
+            }
+
+            #dance-container {
+                width: 120px;
+                height: 120px;
+            }
         }
     </style>
 </head>
@@ -250,7 +289,7 @@
         // 错误处理
         function showErrorMessage() {
             document.querySelector('.queue-panel').innerHTML = `
-                <div class="queue-text" style="color:#ff6666;font-size:1.5em;">
+                <div class="queue-text" style="color:#ff6666;font-size:1.2em;">
                     连接已中断 [错误代码: 420109]
                     <div style="font-size:0.8em;margin-top:15px">请检查网络连接后重试</div>
                 </div>
