@@ -111,36 +111,21 @@
             object-fit: contain;
         }
 
-        .final-message {
-            position: fixed;
-            top: 40%; /* 调整提示位置 */
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: #fff;
-            font-size: 1.5em;
-            z-index: 1000;
-            width: 90%;
-            max-width: 400px;
-        }
-
         #dance-container {
             position: fixed;
-            top: 60%; /* 调整到提示下方 */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            max-width: 300px;
-            height: auto;
-            z-index: 1001;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
             display: none;
+            z-index: 1000;
         }
 
         #dance-video {
             width: 100%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            height: 100%;
+            object-fit: cover;
         }
 
         /* 手机端适配 */
@@ -160,17 +145,6 @@
 
             .queue-text {
                 font-size: 0.9em;
-            }
-
-            .final-message {
-                font-size: 1.2em;
-                top: 30%; /* 手机端提示位置更高 */
-            }
-
-            #dance-container {
-                top: 50%; /* 手机端视频位置调整 */
-                width: 90%;
-                max-width: 250px;
             }
         }
     </style>
@@ -259,7 +233,6 @@
                 
                 // 视频结束处理
                 video.onended = () => {
-                    showFinalMessage();
                     playNaiLongDance();
                 }
 
@@ -267,17 +240,6 @@
                 console.error('视频播放失败:', error);
                 showErrorMessage();
             }
-        }
-
-        // 显示最终提示
-        function showFinalMessage() {
-            const message = document.createElement('div');
-            message.className = 'final-message';
-            message.innerHTML = `
-                <div style="color:#ffdd55;margin-bottom:20px;">你被骗了 😜</div>
-                <div style="font-size:0.6em;">这个按钮根本没用！</div>
-            `;
-            document.body.appendChild(message);
         }
 
         // 播放奶龙跳舞视频
